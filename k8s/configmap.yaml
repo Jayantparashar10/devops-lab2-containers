@@ -1,0 +1,9 @@
+# Lab 2 - app settings, injected into the pods as environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: counter-app-config
+  labels:
+    app: counter-app
+data:
+  APP_MESSAGE: "Hello from Kubernetes"

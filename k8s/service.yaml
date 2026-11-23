@@ -1,0 +1,16 @@
+# Lab 2 - NodePort Service: load-balances across all ready counter-app pods
+apiVersion: v1
+kind: Service
+metadata:
+  name: counter-app
+  labels:
+    app: counter-app
+spec:
+  type: NodePort
+  selector:
+    app: counter-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30090

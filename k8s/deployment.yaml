@@ -1,0 +1,57 @@
+# Lab 2 - Deployment for the counter app
+# Rolling update: add 1 new pod at a time (maxSurge 1) and never drop below
+# the desired count (maxUnavailable 0), so the app stays up during updates.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter-app
+  labels:
+    app: counter-app
+  annotations:
+    kubernetes.io/change-cause: "v1.0 initial deploy"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  minReadySeconds: 5
+  selector:
+    matchLabels:
+      app: counter-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: counter-app
+    spec:
+      containers:
+        - name: counter-app
+          image: counter-app:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: counter-app-config
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
