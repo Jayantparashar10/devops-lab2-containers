@@ -1,0 +1,13 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+k8s
+scripts
+bind-data
+rendered
+Jenkinsfile
+docker-compose.yml
+README.md
+*.log
